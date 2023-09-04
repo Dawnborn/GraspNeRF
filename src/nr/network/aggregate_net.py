@@ -123,6 +123,14 @@ class NeusAggregationNet(BaseAggregationNet):
         return alpha
 
     def forward(self, prj_dict, que_dir, que_pts, que_dists, is_train):
+        """
+        return 
+            alpha:
+            sdf: queries, rays, depth samples
+            colors:
+            grad_error
+            deviation
+        """
         if self.cfg['cos_anneal_end_iter'] and is_train:
             self._update_cos_anneal_ratio()
         qn,rn,dn,_ = que_dir.shape

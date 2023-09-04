@@ -159,7 +159,7 @@ class NeuralRayRenderer(nn.Module):
             fine_outputs = self.fine_render_impl(coarse_render_info, que_imgs_info, ref_imgs_info, is_train)
             for k, v in fine_outputs.items():
                 outputs[k + "_fine"] = v
-        return outputs
+        return outputs # outputs['sdf_values'].shape torch.Size([1, 512, 40]) ->+
 
     def sample_volume(self, ref_imgs_info):
         ref_imgs_info = ref_imgs_info.copy()
@@ -266,6 +266,35 @@ class NeuralRayRenderer(nn.Module):
         return outputs
 
     def forward(self,data):
+        """
+            00: 'sdf_values'
+            01: 'sdf_gradient_error'
+            02: 's'
+            03: 'alpha_values'
+            04: 'colors_nr'
+            05: 'hit_prob_nr'
+            06: 'pixel_colors_nr'
+            07: 'pixel_colors_gt'
+            08: 'ray_mask'
+            09: 'render_depth'
+            10: 'sdf_values_fine'
+            11: 'sdf_gradient_error_fine'
+            12: 's_fine'
+            13: 'alpha_values_fine'
+            14: 'colors_nr_fine'
+            15: 'hit_prob_nr_fine'
+            16: 'pixel_colors_nr_fine'
+            17: 'pixel_colors_gt_fine'
+            18: 'ray_mask_fine'
+            19: 'render_depth_fine'
+            20: 'volume'
+            21: 'depth_mean'
+            22: 'depth_coords'
+            23: 'depth_mean_2'
+            24: 'depth_mean_fine'
+            25: 'depth_mean_fine_2'
+
+        """
         ref_imgs_info = data['ref_imgs_info'].copy()
         que_imgs_info = data['que_imgs_info'].copy()
         is_train = 'eval' not in data
@@ -283,7 +312,7 @@ class NeuralRayRenderer(nn.Module):
             render_outputs = self.render(que_imgs_info, ref_imgs_info, is_train)
 
         if self.cfg['sample_volume']:
-            render_outputs['volume'] = self.sample_volume(ref_imgs_info)
+            render_outputs['volume'] = self.sample_volume(ref_imgs_info) #junpeng: 3d volume torch.Size([1, 1, 40, 40, 40]) 
 
         if (self.cfg['use_depth_loss'] and 'true_depth' in ref_imgs_info) or (not is_train):
             render_outputs.update(self.predict_mean_for_depth_loss(ref_imgs_info))
@@ -311,6 +340,37 @@ class GraspNeRF(nn.Module):
         return (label, rot, width)
 
     def forward(self, data):
+        """
+        return:
+            00: 'sdf_values'
+            01: 'sdf_gradient_error'
+            02: 's'
+            03: 'alpha_values'
+            04: 'colors_nr'
+            05: 'hit_prob_nr'
+            06: 'pixel_colors_nr'
+            07: 'pixel_colors_gt'
+            08: 'ray_mask'
+            09: 'render_depth'
+            10: 'sdf_values_fine'
+            11: 'sdf_gradient_error_fine'
+            12: 's_fine'
+            13: 'alpha_values_fine'
+            14: 'colors_nr_fine'
+            15: 'hit_prob_nr_fine'
+            16: 'pixel_colors_nr_fine'
+            17: 'pixel_colors_gt_fine'
+            18: 'ray_mask_fine'
+            19: 'render_depth_fine'
+            20: 'volume'
+            21: 'depth_mean'
+            22: 'depth_coords'
+            23: 'depth_mean_2'
+            24: 'depth_mean_fine'
+            25: 'depth_mean_fine_2'
+            26: 'vgn_pred'
+            
+        """
         if data['step'] < self.cfg['nr_initial_training_steps']:
             render_outputs = super().forward(data)
             with torch.no_grad():
@@ -320,8 +380,8 @@ class GraspNeRF(nn.Module):
                 render_outputs = super().forward(data)
             vgn_pred = self.vgn_net(render_outputs['volume'])
         else:
-            render_outputs = self.nr_net(data)
-            vgn_pred = self.vgn_net(render_outputs['volume'])
+            render_outputs = self.nr_net(data) #junpeng: render_outputs['sdf_values'] torch.Size([1, 512, 40])
+            vgn_pred = self.vgn_net(render_outputs['volume']) #junpeng: ([1, 1, 40, 40, 40],[1, 4, 40, 40, 40],[1, 1, 40, 40, 40])
 
 
         if 'full_vol' not in data: 
