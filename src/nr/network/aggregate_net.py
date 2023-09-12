@@ -124,6 +124,19 @@ class NeusAggregationNet(BaseAggregationNet):
 
     def forward(self, prj_dict, que_dir, que_pts, que_dists, is_train):
         """
+        prj_dict:
+            [
+                'dir', torch.Size([6, 1, 4096, 40, 3])
+                'pts', torch.Size([6, 1, 4096, 40, 2])
+                'depth', torch.Size([6, 1, 4096, 40, 1])
+                'mask', torch.Size([6, 1, 4096, 40, 1])
+                'ray_feats', torch.Size([6, 1, 4096, 40, 32])
+                'rgb', torch.Size([6, 1, 4096, 40, 3])
+                'alpha', torch.Size([6, 1, 4096, 40, 1])
+                'vis', torch.Size([6, 1, 4096, 40, 1])
+                'hit_prob', torch.Size([6, 1, 4096, 40, 1])
+                'img_feats': torch.Size([6, 1, 4096, 40, 32])
+            ]
         return 
             alpha:
             sdf: queries, rays, depth samples

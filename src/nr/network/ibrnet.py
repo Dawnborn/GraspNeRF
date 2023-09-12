@@ -453,7 +453,7 @@ class IBRNetWithNeuRayNeus(nn.Module):
         :return: rgb and density output, [n_rays, n_samples, 4]
         '''
 
-        num_views = rgb_feat.shape[2]
+        num_views = rgb_feat.shape[2] # torch.Size([512, 40, 6, 35])
         direction_feat = self.ray_dir_fc(ray_diff)
         rgb_in = rgb_feat[..., :3]
         rgb_feat = rgb_feat + direction_feat

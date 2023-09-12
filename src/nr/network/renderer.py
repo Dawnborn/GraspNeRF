@@ -115,9 +115,9 @@ class NeuralRayRenderer(nn.Module):
         que_pts, que_dir = depth2points(que_imgs_info, que_depth)
         if self.cfg['disable_view_dir']:
             que_dir = None
-        prj_dict = project_points_dict(ref_imgs_info, que_pts)
-        prj_dict = self.predict_proj_ray_prob(prj_dict, ref_imgs_info, que_dists, is_fine)
-        prj_dict = self.get_img_feats(ref_imgs_info, prj_dict)
+        prj_dict = project_points_dict(ref_imgs_info, que_pts) #junpeng: {'dir':prj_dir, 'pts':prj_pts, 'depth':prj_depth, 'mask': prj_mask.float(), 'ray_feats':prj_ray_feats, 'rgb':prj_rgb}
+        prj_dict = self.predict_proj_ray_prob(prj_dict, ref_imgs_info, que_dists, is_fine) #junpeng: alpha, vis, hit_prob
+        prj_dict = self.get_img_feats(ref_imgs_info, prj_dict) #junpeng: img_features
 
         outputs = self.network_rendering(prj_dict, que_dir, que_pts, que_depth, is_fine, is_train, is_sdf=self.use_sdf) 
 
