@@ -5,7 +5,7 @@ import pybullet
 from pybullet_utils import bullet_client
 
 
-from vgn.utils.transform import Rotation, Transform
+from .transform import Rotation, Transform
 
 assert pybullet.isNumpyEnabled(), "Pybullet needs to be built with NumPy"
 

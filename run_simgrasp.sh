@@ -1,7 +1,7 @@
 #!/bin/bash
 
 GPUID=0
-BLENDER_BIN=blender
+BLENDER_BIN=/home/junpeng.hu/Softwares/blender-2.93.3-linux-x64/blender
 
 RENDERER_ASSET_DIR=./data/assets
 BLENDER_PROJ_PATH=./data/assets/material_lib_graspnet-v2.blend
@@ -14,7 +14,7 @@ render_frame_list="2,6,10,14,18,22"
 check_seen_scene=0
 expname=0
 
-NUM_TRIALS=200
+NUM_TRIALS=1  # 200
 METHOD='graspnerf'
 
 mycount=0 

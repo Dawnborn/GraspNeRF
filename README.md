@@ -73,3 +73,50 @@ If you find our work useful in your research, please consider citing:
 If you have any questions, please open a github issue or contact us:
 
 Qiyu Dai: qiyudai@pku.edu.cn, Yan Zhu: zhuyan_@stu.pku.edu.cn, He Wang: hewang@pku.edu.cn
+
+
+# My Installation
+<!-- (previous environment: `grasp37cu111` not working with blender) -->
+
+existing environment: `grasp39cu111`
+
+(assume cuda 11.1 is already installed)
+here we activate the cuda 11.1 by
+```
+source prep_cuda.sh
+```
+
+## Blender
+
+existing env `grasp39cu111`
+blender 2.93 only match with python 3.9
+
+download and extract `blender-2.93.3-ubuntu`
+
+create a soft link to replace the default python of blender
+```
+ln -s /home/junpeng.hu/anaconda3/envs/grasp39cu111 /home/junpeng.hu/Softwares/blender-2.93.3-linux-x64/2.93/python
+```
+
+install pytorch
+```
+pip install torch==1.10.1+cu111 torchvision==0.11.2+cu111 -f https://download.pytorch.org/whl/cu111/torch_stable.html
+```
+
+```
+pip install open3d 
+pip install inplace-abn
+pip install scikit-image
+pip install easydict
+pip install opencv-python
+pip install plyfile
+pip install transforms3d
+pip install torchmetrics
+```
+modify `/GraspNeRF/src/gd/utils/btsim.py`:
+```
+from .transform import Rotation, Transform
+```
+
+change all `ILSVRC2012_val` in `/GraspNeRF/data/assets/imagenet/test_paths.txt` to `ILSVRC2010_val`
+
